@@ -50,13 +50,21 @@ class TrelloWeeklySync:
         }
     
     def load_config(self) -> Dict:
-        """Load configuration file"""
+        """Load configuration file or use environment variables"""
         try:
             with open(self.config_path, 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            logger.error(f"Config file not found: {self.config_path}")
-            sys.exit(1)
+            # If running in GitHub Actions or env vars are set, use minimal config
+            if os.getenv('TRELLO_API_KEY') and os.getenv('TRELLO_API_TOKEN') and os.getenv('WEEKLY_BOARD_ID'):
+                logger.info("Config file not found, using environment variables")
+                return {
+                    'trigger_label': 'This Week',
+                    'lists': {}  # Will be determined from board if needed
+                }
+            else:
+                logger.error(f"Config file not found and environment variables not set: {self.config_path}")
+                sys.exit(1)
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in config file: {e}")
             sys.exit(1)
