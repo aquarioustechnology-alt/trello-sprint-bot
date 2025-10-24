@@ -1,0 +1,61 @@
+name: Weekly Milestone Sync
+
+on:
+  schedule:
+    # Runs every hour from 9 AM to 12 PM IST (3:30 AM - 6:30 AM UTC)
+    # IST is UTC+5:30, so 9 AM IST = 3:30 AM UTC
+    - cron: '30 3 * * *'  # 9:00 AM IST
+    - cron: '30 4 * * *'  # 10:00 AM IST
+    - cron: '30 5 * * *'  # 11:00 AM IST
+    - cron: '30 6 * * *'  # 12:00 PM IST
+  
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  sync-cards:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests python-dateutil
+      
+      - name: Restore previous mapping from cache
+        uses: actions/cache/restore@v3
+        with:
+          path: weekly_sync_mapping.json
+          key: trello-sync-mapping
+          restore-keys: |
+            trello-sync-mapping-
+      
+      - name: Run sync script
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_API_TOKEN: ${{ secrets.TRELLO_API_TOKEN }}
+          WEEKLY_BOARD_ID: ${{ secrets.WEEKLY_BOARD_ID }}
+        run: |
+          python weekly_milestone_sync.py
+      
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: sync-logs-${{ github.run_number }}
+          path: logs/
+          retention-days: 30
+      
+      - name: Save mapping for next run
+        uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: weekly_sync_mapping.json
+          key: trello-sync-mapping
+

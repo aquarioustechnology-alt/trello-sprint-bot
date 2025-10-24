@@ -1,12 +1,55 @@
-# Python-generated files
+# Python
 __pycache__/
-*.py[oc]
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
 wheels/
-*.egg-info
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Virtual environments
-.venv
-
+# Trello credentials (if using local .env)
 .env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Card mapping (contains state, should be in cache/not in git for GitHub Actions)
+weekly_sync_mapping.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Weekly Milestone Config (contains API keys)
+weekly_config.json
+

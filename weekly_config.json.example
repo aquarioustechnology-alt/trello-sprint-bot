@@ -1,0 +1,37 @@
+{
+  "weekly_board_id": "YOUR_WEEKLY_BOARD_ID",
+  "weekly_board_url": "https://trello.com/b/YOUR_BOARD_ID/weekly-milestone",
+  "workspace_id": "YOUR_WORKSPACE_ID",
+  "workspace_name": "Aquarious Agile",
+  "workspace_url": "https://trello.com/w/YOUR_WORKSPACE",
+  "lists": {
+    "this_week": "YOUR_THIS_WEEK_LIST_ID",
+    "in_progress": "YOUR_IN_PROGRESS_LIST_ID",
+    "completed": "YOUR_COMPLETED_LIST_ID",
+    "blocked": "YOUR_BLOCKED_LIST_ID"
+  },
+  "project_boards": [
+    {
+      "name": "Used Oil India",
+      "id": "YOUR_BOARD_ID_1",
+      "weekly_label_name": "Used Oil India",
+      "weekly_label_color": "yellow"
+    },
+    {
+      "name": "B2B Marketplace",
+      "id": "YOUR_BOARD_ID_2",
+      "weekly_label_name": "B2B Marketplace",
+      "weekly_label_color": "blue"
+    },
+    {
+      "name": "Finomatic Investor App",
+      "id": "YOUR_BOARD_ID_3",
+      "weekly_label_name": "Finomatic Investor App",
+      "weekly_label_color": "green"
+    }
+  ],
+  "trigger_label": "This Week",
+  "trello_api_key": "YOUR_TRELLO_API_KEY",
+  "trello_api_token": "YOUR_TRELLO_API_TOKEN"
+}
+
