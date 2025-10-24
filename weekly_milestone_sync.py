@@ -229,7 +229,8 @@ class TrelloWeeklySync:
             self.api_request('POST', f"cards/{new_card['id']}/idMembers", params={'value': member_id})
         
         # Add comment to original card
-        comment = f"📅 This card has been added to the [Weekly Milestone board]({self.config['weekly_board_url']})"
+        board_url = self.config.get('weekly_board_url', f"https://trello.com/b/{self.weekly_board_id}")
+        comment = f"📅 This card has been added to the [Weekly Milestone board]({board_url})"
         self.api_request('POST', f"cards/{original_card['id']}/actions/comments", params={'text': comment})
         
         # Store mapping
