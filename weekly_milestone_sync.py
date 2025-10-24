@@ -48,6 +48,30 @@ class TrelloWeeklySync:
             'removed': 0,
             'errors': 0
         }
+        
+        # Auto-load lists if not configured (for GitHub Actions)
+        if not self.config.get('lists'):
+            self.config['lists'] = self.get_board_lists()
+    
+    def get_board_lists(self) -> Dict:
+        """Get board lists and map them by name"""
+        lists_response = self.api_request('GET', f'boards/{self.weekly_board_id}/lists')
+        if not lists_response:
+            logger.warning("Could not get board lists, using first list as default")
+            return {'this_week': None}
+        
+        # Map lists by name (lowercase, replace spaces with underscores)
+        lists_map = {}
+        for list_item in lists_response:
+            key = list_item['name'].lower().replace(' ', '_')
+            lists_map[key] = list_item['id']
+        
+        # Use first list as this_week if not found
+        if 'this_week' not in lists_map and lists_response:
+            lists_map['this_week'] = lists_response[0]['id']
+            logger.info(f"Using first list '{lists_response[0]['name']}' as 'This Week' list")
+        
+        return lists_map
     
     def load_config(self) -> Dict:
         """Load configuration file or use environment variables"""
