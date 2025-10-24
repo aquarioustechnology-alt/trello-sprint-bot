@@ -270,6 +270,35 @@ class TrelloWeeklySync:
                 logger.info(f"Moved to completed (original closed): {weekly_card['name']}")
                 self.stats['synced'] += 1
     
+    def cleanup_orphaned_cards(self):
+        """Remove cards from Weekly board that don't have 'This Week' label (not in mapping)"""
+        logger.info("Checking for orphaned cards on Weekly board...")
+        all_weekly_cards = self.api_request('GET', f'boards/{self.weekly_board_id}/cards')
+        
+        if not all_weekly_cards:
+            return
+        
+        # Get all mapped weekly card IDs
+        mapped_card_ids = {m['weekly_card_id'] for m in self.mapping['mappings']}
+        
+        orphans_removed = 0
+        for card in all_weekly_cards:
+            # Skip cards that are in the mapping (they're handled by cleanup_removed_labels)
+            if card['id'] in mapped_card_ids:
+                continue
+            
+            # Check if card has "This Week" label
+            has_this_week_label = any(label.get('name') == self.config['trigger_label'] for label in card.get('labels', []))
+            
+            if not has_this_week_label:
+                logger.info(f"Removing orphaned card without 'This Week' label: {card['name']}")
+                self.api_request('DELETE', f"cards/{card['id']}")
+                orphans_removed += 1
+                self.stats['removed'] += 1
+        
+        if orphans_removed > 0:
+            logger.info(f"Removed {orphans_removed} orphaned card(s)")
+    
     def cleanup_removed_labels(self):
         """Remove cards from Weekly board when 'This Week' label is removed"""
         for mapping in self.mapping['mappings'][:]:  # Copy list to allow modification during iteration
@@ -409,6 +438,9 @@ class TrelloWeeklySync:
             
             # Step 3: Cleanup removed labels
             self.cleanup_removed_labels()
+            
+            # Step 4: Cleanup orphaned cards (cards on Weekly board not in mapping)
+            self.cleanup_orphaned_cards()
             
             # Save mapping
             self.save_mapping()
