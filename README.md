@@ -46,7 +46,31 @@ nano weekly_config.json
 pip install -r requirements.txt
 ```
 
-### 4. Run Manually
+### 4. Setup "This Week" Label on All Boards (One-Time)
+
+**RECOMMENDED**: Create the "This Week" label on all your boards for easy selection:
+
+```bash
+# Set your Trello credentials
+export TRELLO_API_KEY=your_api_key_here
+export TRELLO_API_TOKEN=your_api_token_here
+
+# Run the setup script
+python setup_this_week_label.py
+```
+
+This will:
+- ✅ Scan all your boards
+- ✅ Create an orange "This Week" label on each board
+- ✅ Skip boards that already have the label
+- ✅ Ensure consistent labeling across your account
+
+**Benefits:**
+- 🎯 Team members just **select** the label (no typing/creating)
+- 🎨 Consistent orange color across all boards
+- ❌ No typos or label name variations
+
+### 5. Run Manually
 
 ```bash
 python weekly_milestone_sync.py
@@ -215,6 +239,11 @@ MIT License - see LICENSE file for details
 ---
 
 ## 🎊 Changelog
+
+### v2.1.0 (October 24, 2025)
+- ✨ **NEW**: Label setup script - Create "This Week" label on all boards in one command
+- 🎯 **IMPROVED**: Team UX - Members can now just select label instead of creating it
+- 🎨 **IMPROVED**: Consistent labeling - Same color and name across all boards
 
 ### v2.0.0 (October 24, 2025)
 - ✨ **NEW**: Full account scanning - scans ALL boards across ALL workspaces
